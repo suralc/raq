@@ -12,9 +12,9 @@ Simple use:
 // $responseHandle wraps a Guzzle promise
 $responseHandle = \Raq\fetch('http://my.url');
 // the promise will not be resolved until you call the query method on wrapper
-$result = $responseHandle->query(function(QueryBuilder $q, ResponseInterface $r) {
+$result = $responseHandle->query(function(QueryBuilder $q) {
 	// retrieve all a tags that are children of div tags
-	return $q->createXmlQuery($r)->select('div > a');
+	return $q->createXmlQuery()->select('div > a');
 });
 ```
 
@@ -25,8 +25,8 @@ $urls = [
     'http://foo.bar/user2',
     'http://foo.bar/user3',
 ];
-$responseGen = \Raq\fetchAll($urls)->queryAll(function(QueryBuilder $q, ResponseInterface $r) {
-	return $q->createXmlQuery($r)->nodes()->each(function(DomElement $e) {
+$responseGen = \Raq\fetchAll($urls)->queryAll(function(QueryBuilder $q) {
+	return $q->createXmlQuery()->nodes()->each(function(ResponseInterface $r, DomElement $e) {
     	if($e->tagName !== 'fooBar') return $e->tagName;
         return null;
     });
