@@ -1,8 +1,11 @@
 # Raq
 
-
 Raq (**R**equest **a**nd **Q**uery) aims to be a small convenience wrapper above guzzle and the symfony dom crawler 
 to retrieve content from remote sites. It utilizes guzzles async functionality.
+
+## Notes
+
+Nothing here is finished. Only the html query builder is partly implemented. Look at the tests for real usage examples.
 
 ## Examples
 Simple use: 
