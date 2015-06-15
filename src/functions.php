@@ -103,9 +103,8 @@ function fetchFromRequest(RequestInterface $request, Client $client, array $requ
 function gen2arr(\Generator $generator)
 {
     $values = [];
-    while ($generator->valid()) {
-        $values[ $generator->key() ] = $generator->current();
-        $generator->next();
+    foreach($generator as $key => $value) {
+        $values[ $key ] = $value;
     }
     return $values;
 }
