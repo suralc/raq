@@ -6,6 +6,7 @@ to retrieve content from remote sites. It utilizes guzzles async functionality.
 ## Notes
 
 Nothing here is finished. Only the html query builder is partly implemented. Look at the tests for real usage examples.
+HHVM is currently unsupported as their generator implementation is not compatible with php.
 
 ## Examples
 Simple use: 
