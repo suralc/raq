@@ -1,6 +1,6 @@
 <?php
 /**
- * QueryBuilder.php
+ * Xml.php
  *
  * MIT LICENSE
  *
@@ -15,10 +15,10 @@
  * @license    http://opensource.org/licenses/MIT  MIT
  */
 
-namespace Raq;
+namespace Raq\Query;
 
 
-class QueryBuilder
+class Xml extends BaseQuery
 {
 
 }

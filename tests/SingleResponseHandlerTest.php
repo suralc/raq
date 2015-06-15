@@ -5,7 +5,7 @@ namespace Raq\tests;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
-use Raq\QueryBuilder;
+use Raq\QueryFactory;
 use Raq\SingleResponseHandler;
 
 class SingleResponseHandlerTest extends RaqTest
@@ -84,16 +84,16 @@ class SingleResponseHandlerTest extends RaqTest
     public function testThatCorrectBuilderIsPassed()
     {
         $response = $this->getMock(ResponseInterface::class);
-        $builder = new QueryBuilder();
+        $builder = new QueryFactory();
         $srh = new SingleResponseHandler($response);
-        $queryComposer = function (QueryBuilder $b) use ($builder) {
+        $queryComposer = function (QueryFactory $b) use ($builder) {
             $this->assertSame($builder, $b);
             return function () {
                 return '';
             };
         };
         $srh->query($queryComposer, $builder);
-        $queryComposer = function (QueryBuilder $b) use ($builder) {
+        $queryComposer = function (QueryFactory $b) use ($builder) {
             $this->assertNotSame($builder, $b);
             return function () {
                 return '';

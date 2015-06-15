@@ -27,8 +27,14 @@ class SingleResponseHandler
      * @var ResponseInterface|PromiseInterface
      */
     private $response;
+    /**
+     * @var bool
+     */
     private $unresolved = false;
 
+    /**
+     * @param ResponseInterface|PromiseInterface $response
+     */
     public function __construct($response)
     {
         if ($response instanceof ResponseInterface) {
@@ -45,26 +51,29 @@ class SingleResponseHandler
 
     /**
      * @param callable $queryComposer
-     * @param \Raq\QueryBuilder $builder
+     * @param \Raq\QueryFactory $qFactory
      * @return mixed
      */
-    public function query(callable $queryComposer, QueryBuilder $builder = null)
+    public function query(callable $queryComposer, QueryFactory $qFactory = null)
     {
         if ($this->unresolved) {
             $this->response = $this->response->wait(true);
         }
 
-        if ($builder === null) {
-            $builder = new QueryBuilder();
+        if ($qFactory === null) {
+            $qFactory = new QueryFactory();
         }
 
-        $query = $queryComposer($builder, $this);
+        $query = $queryComposer($qFactory, $this);
         if (!is_callable($query)) {
             throw new \RuntimeException('The value returned by the query composer callback has to be callable');
         }
         return $query($this->response);
     }
 
+    /**
+     * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\ResponseInterface
+     */
     public function getResponseHandler()
     {
         return $this->response;

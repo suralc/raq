@@ -18,7 +18,9 @@
 namespace Raq;
 
 
+use Prophecy\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
+use Raq\Query\Exception\QueryHandlerException;
 
 class MultiResponseHandler
 {
@@ -43,20 +45,55 @@ class MultiResponseHandler
     }
 
     /**
+     * @param SingleResponseHandler|PromiseInterface|ResponseInterface $response
+     * @return $this
+     */
+    public function addResponse($response)
+    {
+        if ($response instanceof SingleResponseHandler) {
+            $this->responseHandlers[] = $response;
+        } else {
+            $this->responseHandlers[] = new SingleResponseHandler($response);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array|SingleResponseHandler[]|PromiseInterface[]|ResponseInterface[] $responses
+     * @return $this
+     */
+    public function addResponses(array $responses = [])
+    {
+        foreach ($responses as $response) {
+            $this->addResponse($response);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param callable $queryComposer
-     * @param \Raq\QueryBuilder $builder
+     * @param \Raq\QueryFactory $factory
      * @return \Generator
      */
-    public function queryAll(callable $queryComposer, QueryBuilder $builder = null)
+    public function queryAll(callable $queryComposer, QueryFactory $factory = null)
     {
-        if ($builder === null) {
-            $builder = new QueryBuilder();
+        if ($factory === null) {
+            $factory = new QueryFactory();
         }
         foreach ($this->responseHandlers as $handler) {
-            yield $handler->query($queryComposer, $builder);
+            try {
+                yield $handler->query($queryComposer, $factory);
+            } catch (QueryHandlerException $qe) {
+                yield $qe;
+            }
         }
     }
 
+    /**
+     * @return \Raq\SingleResponseHandler[]
+     */
     public function getResponseHandlers()
     {
         return $this->responseHandlers;
